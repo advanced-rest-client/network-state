@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+    <link rel="import" href="../network-state.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <network-state></network-state>
+      </template>
+    </test-fixture>
+
+    <script>
+    /* global sinon, fixture, assert */
+
+    function fire(name, detail, node) {
+      var event = new CustomEvent(name, {
+        bubbles: true,
+        composed: true,
+        detail: detail
+      });
+      (node || document).dispatchEvent(event);
+      return event;
+    }
+
+    suite('basic', function() {
+      var element;
+
+      setup(function() {
+        element = fixture('basic');
+      });
+
+      test('`network-state-changed` is fired for offline event', function() {
+        // first set offline event so the change will be forced
+        fire('online');
+        var spy = sinon.stub();
+        element.addEventListener('network-state-changed', spy);
+        fire('offline');
+        assert.isTrue(spy.calledOnce);
+      });
+
+      test('`network-state-changed` is fired for online event', function() {
+        // first set offline event so the change will be forced
+        fire('offline');
+        var spy = sinon.stub();
+        element.addEventListener('network-state-changed', spy);
+        fire('online');
+        assert.isTrue(spy.calledOnce);
+      });
+
+    });
+    </script>
+
+  </body>
+</html>
